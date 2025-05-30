@@ -28,3 +28,6 @@
 ### 2. Запустить и сконфигурировать Kubernetes кластер.
 
 [Пример шаблона создания инвентори для Ansible](https://onhub.ru/d/18-sozdaem-inventory-dlya-ansible-s-pomoschyu-terraform)
+
+### 3. CI-CD 
+https://docs.github.com/ru/actions/sharing-automations/creating-actions/creating-a-docker-container-action
