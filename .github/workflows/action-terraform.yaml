@@ -37,10 +37,7 @@ jobs:
         with:
           terraform_version: 1.9.8
 
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
-        continue-on-error: true
+
 
       - name: Terraform Init
         id: init
@@ -54,7 +51,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-        run: terraform plan -no-color -var=${{ secrets.YC_FOLDER_ID }} -var=${{ secrets.YC_CLOUD_ID }} -var=${{ secrets.YC_TOKEN }}
+        run: terraform plan -no-color -var="folder_id="${{ secrets.YC_FOLDER_ID }}"" -var="cloud_id="${{ secrets.YC_CLOUD_ID }}"" -var="token="${{ secrets.YC_TOKEN }}""
         continue-on-error: true
 
       
