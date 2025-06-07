@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #authors: yeasy.github.com
 #date: 2013-07-05
-
+ 
 import sys
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
