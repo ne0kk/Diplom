@@ -43,6 +43,7 @@
 
 В качестве тестового приложения будем использовать образ https://hub.docker.com/r/yeasy/simple-web/
 Возьмем исходники и соберем образ. 
+![image](https://github.com/user-attachments/assets/d83dc4d4-9c72-402b-8d3a-7c5b0ba32853)
 
 
 
