@@ -26,5 +26,5 @@ resource "yandex_vpc_subnet" "public-d" {
   zone           = var.zone-d
   network_id     = "${yandex_vpc_network.default.id}"
   v4_cidr_blocks = var.cidr-d
-  
+   
 }
