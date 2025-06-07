@@ -28,9 +28,9 @@ jobs:
         env:
            IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
         run: |
-          docker build . --file Dockerfile --tag nginx:$IMAGE_TAG
-          docker tag nginx:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/nginx:$IMAGE_TAG
-          docker push ${{ secrets.USER_DOCKER_HUB }}/nginx:$IMAGE_TAG
+          docker build . --file app/Dockerfile --tag simple-web:$IMAGE_TAG
+          docker tag simple-web:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+          docker push ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
 
 
 
