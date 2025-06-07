@@ -1,0 +1,67 @@
+name: "Terraform CI/CD Backend"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+
+
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    env:
+      working-directory: terraform
+      backend-access-key-id: ${{ secrets.BACKEND_ACCESS_KEY_ID }}
+      backend-secret-access-key: ${{ secrets.BACKEND_SECRET_ACCESS_KEY }}
+      backend-region: ${{ secrets.BACKEND_REGION }}
+      backend-BUCKET: ${{ secrets.BACKEND_BUCKET }}
+      backend-KEY: ${{ secrets.BACKEND_KEY }}
+      backend-DYNAMODB-TABLE: ${{ secrets.BACKEND_DYNAMODB_TABLE }}
+
+
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -backend-config=bucket=${{ env.backend-BUCKET }} -backend-config=key=${{ env.backend-KEY }} -backend-config=access_key=${{ env.backend-access-key-id }} -backend-config=secret_key=${{ env.backend-secret-access-key }} -backend-config=dynamodb_table=${{ env.backend-DYNAMODB-TABLE }} 
+
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color -var=${{ secrets.YC_FOLDER_ID }} -var=${{ secrets.YC_CLOUD_ID }} -var=${{ secrets.YC_TOKEN }}
+        continue-on-error: true
+
+      
+            
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -var=${{ secrets.YC_FOLDER_ID }} -var=${{ secrets.YC_CLOUD_ID }} -var=${{ secrets.YC_TOKEN }} 
