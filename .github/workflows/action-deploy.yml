@@ -6,11 +6,7 @@ on:
       - main
     paths:
       - 'app/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'app/**'
+
 
 jobs:
   deploy:
@@ -49,7 +45,7 @@ jobs:
       - name: Configure kubectl
         env:
           YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SERVICE_ACCOUNT_KEY }}
-          YC_CLUSTER_ID: ${{ secrets.YC_CLUSTER_NAME }}
+          YC_CLUSTER_NAME: ${{ secrets.YC_CLUSTER_NAME }}
         run: |
           yc managed-kubernetes cluster get-credentials --name "${YC_CLUSTER_NAME}" --external
           kubectl get nodes
