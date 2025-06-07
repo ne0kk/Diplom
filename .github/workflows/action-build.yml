@@ -1,0 +1,38 @@
+         
+name: Build Docker Image CI
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'app/**'
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check
+        uses: actions/checkout@v4
+
+      - name: Docker Hub enter
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.USER_DOCKER_HUB }}
+          password: ${{ secrets.TOKEN_DOCKER_HUB }}
+
+      - name: Build Docker Hub Registry
+        env:
+           IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+        run: |
+          docker build . --file Dockerfile --tag nginx:$IMAGE_TAG
+          docker tag nginx:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/nginx:$IMAGE_TAG
+          docker push ${{ secrets.USER_DOCKER_HUB }}/nginx:$IMAGE_TAG
+
+
+
+
+
