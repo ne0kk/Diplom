@@ -24,7 +24,7 @@
 Буду использовать наработки, полученные во время обучения, изменяя и дополняя их. 
 
 Организация хранения файлов стейтов будет построена с помощью s3 хранилища YC по примеру из [документации](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-state-storage?utm_referrer=https%3A%2F%2Fwww.google.com%2F)
-
+https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-state-lock
 Для создания кластера был выбран вариант использования сервиса Yandex Managed Service for Kubernetes.
 
 Данный сервис не использовался в обучении, было принято решение его протестировать. 
