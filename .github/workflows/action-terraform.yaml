@@ -52,7 +52,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        if: github.event_name == 'pull_request'
+        if: contains(github.ref, "dev")
         run: terraform plan -no-color -var=${{ secrets.YC_FOLDER_ID }} -var=${{ secrets.YC_CLOUD_ID }} -var=${{ secrets.YC_TOKEN }}
         continue-on-error: true
 
