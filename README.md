@@ -39,6 +39,12 @@
 Блок для добавления ссылок на манифесты. 
 ---
 
+### 4. Создание тестового приложения
+
+В качестве тестового приложения будем использовать образ https://hub.docker.com/r/yeasy/simple-web/
+Возьмем исходники и соберем образ. 
+
+
 
 ### 3. CI-CD 
 https://docs.github.com/ru/actions/sharing-automations/creating-actions/creating-a-docker-container-action
