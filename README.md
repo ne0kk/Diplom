@@ -44,8 +44,32 @@
 В качестве тестового приложения будем использовать образ https://hub.docker.com/r/yeasy/simple-web/
 Возьмем исходники и соберем образ. 
 ![image](https://github.com/user-attachments/assets/d83dc4d4-9c72-402b-8d3a-7c5b0ba32853)
+![image](https://github.com/user-attachments/assets/d0c9b2b4-05fd-4f23-ade0-068505990742)
+![image](https://github.com/user-attachments/assets/726fecc5-496f-42e4-a8d0-92c3dcf3e786)
+![image](https://github.com/user-attachments/assets/cc44a5cc-6a2e-447a-a49b-81287ccf0433)
+![image](https://github.com/user-attachments/assets/cdffa6db-8862-4729-adf1-ba88c808007a)
 
+
+
+### 4. Создание мониторинга
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm search repo prometheus-community
+helm search repo prometheus-community/kube-prometheus-stack
+helm search repo prometheus-community/kube-prometheus-stack --versions
+helm install prometheus prometheus-community/kube-prometheus-stack --version 72.9.1 --namespace monitoring --create-namespace --set grafana.service.type=NodePort
+  adminUser: admin
+  adminPassword: prom-operator
+
+![image](https://github.com/user-attachments/assets/2ddbbc0c-af4f-46b7-88bd-274af2ca8c3b)
+![image](https://github.com/user-attachments/assets/e320714a-5123-45fd-9f74-1843da0ce18b)
+![image](https://github.com/user-attachments/assets/0bf1961d-ac14-458c-ab6b-be8bfe9b73cb)
 
 
 ### 3. CI-CD 
 https://docs.github.com/ru/actions/sharing-automations/creating-actions/creating-a-docker-container-action
+
+---
+Блок для добавления ссылок на манифесты. 
+---
+
