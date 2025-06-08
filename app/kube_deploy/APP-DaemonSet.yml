@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
       - name: simple-web
-        image: ne0kk/simple-web:v1
+        image: ne0kk/simple-web:latest
