@@ -58,7 +58,7 @@ jobs:
           kubectl config view
           kubectl get nodes
           kubectl get pods --all-namespaces
-          kubectl destroy -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
+          kubectl delete -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
           kubectl apply -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
         # kubectl create deployment nginx --image=${{ secrets.USER_DOCKER_HUB }}/nginx:$IMAGE_TAG
 
