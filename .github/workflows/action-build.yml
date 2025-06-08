@@ -31,8 +31,3 @@ jobs:
           docker build . --file app/Dockerfile --tag simple-web:$IMAGE_TAG
           docker tag simple-web:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
           docker push ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
-
-
-
-
-
