@@ -28,3 +28,12 @@ resource "yandex_vpc_subnet" "public-d" {
   v4_cidr_blocks = var.cidr-d
  
 }
+
+# Подсеть public-d2
+resource "yandex_vpc_subnet" "public-d2" {
+  name           = "New subnet"
+  zone           = var.zone-d
+  network_id     = "${yandex_vpc_network.default.id}"
+  v4_cidr_blocks = ["192.168.21.0/24"]
+ 
+}
