@@ -17,14 +17,14 @@
 Доступ к YC орагизован с локальной виртуальной машины с CentOS8 на борту. 
 
 
-### 1. Подготовка облачной инфраструктуры на базе облачного провайдера Яндекс.Облако.
-### 2. Запустить и сконфигурировать Kubernetes кластер.
+## 1. Подготовка облачной инфраструктуры на базе облачного провайдера Яндекс.Облако.
+## 2. Запустить и сконфигурировать Kubernetes кластер.
 
 Для создания инфрструктуры, буду использовать [Terraform](https://www.terraform.io/) как указано в задании. 
 
 Буду использовать наработки, полученные во время обучения, изменяя и дополняя их. 
 
-Организация хранения файлов стейтов будет построена с помощью s3 хранилища YC по примеру из [документации](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-state-storage?utm_referrer=https%3A%2F%2Fwww.google.com%2F)
+Организация хранения файлов стейтов будет построена с помощью s3 хранилища YC по примеру из [документации] (https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-state-storage?utm_referrer=https%3A%2F%2Fwww.google.com%2F)
 https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-state-lock
 
 Для создания кластера был выбран вариант использования сервиса Yandex Managed Service for Kubernetes.
