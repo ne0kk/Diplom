@@ -2,10 +2,13 @@ name: Deploy to YC Kubernetes
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'app/**'
+    # branches:
+    #   - main
+    # paths:
+    #   - 'app/source/**'
+    #   - 'app/kube_deploy/**'
+    tags:
+      - v*
 
 
 jobs:
@@ -58,7 +61,12 @@ jobs:
           kubectl config view
           kubectl get nodes
           kubectl get pods --all-namespaces
-          kubectl delete -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
-          kubectl apply -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
-        # kubectl create deployment nginx --image=${{ secrets.USER_DOCKER_HUB }}/nginx:$IMAGE_TAG
+          kubectl set image deployment/simple-deploynent image=${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG -n app
+          kubectl rollout status deployment/simple-deploynent -n app
+          kubectl get pods --all-namespaces
+        #  kubectl delete -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
+        #  kubectl apply -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
+        # kubectl create deployment nginx --image=${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+        # kubectl set image deployment/simple-deploynent simple-web=ne0kk/simple-web:latest -n app
+        # kubectl rollout status deployment/simple-deploynent -n app
 

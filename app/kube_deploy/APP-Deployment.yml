@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-deploynent
+  namespace: app
+spec: 
+ selector:
+  matchLabels:
+   app: front
+ replicas: 3
+ strategy:
+  type: RollingUpdate
+  rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+ template :
+  metadata:
+   labels:
+    app: front
+  spec:
+   containers:
+    - name: simple-web
+      image: ne0kk/simple-web:latest
+      ports:
+      - containerPort: 80
+        name: simple-port
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-service
+  namespace: app
+spec:
+  ports:
+    - name: simple-port
+      port: 80
+      protocol: TCP
+      targetPort: 80
+      nodePort: 30080
+  selector:
+    app: front
+  type: NodePort
