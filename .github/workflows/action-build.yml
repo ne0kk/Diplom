@@ -28,12 +28,12 @@ jobs:
       - name: Build Docker Hub Registry
         env:
            IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-           IMAGE_TAG1: github.ref_type
+           IMAGE_TAG1: github.ref_name || 'latest'
            IMAGE_TAG2: github.ref_name
         run: |
           echo $IMAGE_TAG
           echo $IMAGE_TAG1
-          echo $IMAGE_TAG 2
+          echo $IMAGE_TAG2
           docker build . --file app/source/Dockerfile --tag simple-web:$IMAGE_TAG
           docker tag simple-web:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
           docker push ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
