@@ -78,10 +78,12 @@ jobs:
 
       # Шаг 6: Deploy APP
       - name: Deploy to Kubernetes
-
+        env:
+           IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
         run: |
           echo ${{ env.IMAGE_TAG }}
           echo env.IMAGE_TAG
+          echo $IMAGE_TAG
           echo ${env.IMAGE_TAG}
         #  kubectl config view
         #  kubectl get nodes
