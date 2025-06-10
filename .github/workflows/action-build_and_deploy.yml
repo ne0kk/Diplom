@@ -24,7 +24,7 @@ jobs:
         with:
           username: ${{ secrets.USER_DOCKER_HUB }}
           password: ${{ secrets.TOKEN_DOCKER_HUB }}
-      - run: echo "Переменная среды установлена: ${{ env.IMAGE_TAG }}"
+        run: echo "Переменная среды установлена: ${{ env.IMAGE_TAG }}"
         env:
           IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
       - name: Build Docker Hub Registry
