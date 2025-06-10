@@ -7,8 +7,8 @@ on:
     #   - dev
     # paths:
     #   - 'app/source/**'
-    tags:
-      - v*
+    #tags:
+    #  - v*
 
 jobs:
   build:
@@ -27,9 +27,8 @@ jobs:
 
       - name: Build Docker Hub Registry
         env:
-           IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-           IMAGE_TAG1: github.ref_name || 'latest'
-           IMAGE_TAG2: github.ref_name
+           IMAGE_TAG: ${{ github.ref_type == 'tag'  || 'latest' }}
+
         run: |
           echo $IMAGE_TAG
           echo $IMAGE_TAG1

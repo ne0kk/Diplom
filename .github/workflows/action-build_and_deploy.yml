@@ -1,19 +1,45 @@
-name: Deploy to YC Kubernetes
+         
+name: Build Docker Image CI
 
 on:
   push:
     # branches:
-    #   - main
+    #   - dev
     # paths:
     #   - 'app/source/**'
-    #   - 'app/kube_deploy/**'
-    #tags:
-    #  - v*
-
+    tags:
+      - v*
 
 jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check
+        uses: actions/checkout@v4
+
+      - name: Docker Hub enter
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.USER_DOCKER_HUB }}
+          password: ${{ secrets.TOKEN_DOCKER_HUB }}
+
+      - name: Build Docker Hub Registry
+        env:
+           IMAGE_TAG: ${{ github.ref_type == 'tag'  || 'latest' }}
+
+        run: |
+          echo $IMAGE_TAG
+          echo $IMAGE_TAG1
+          echo $IMAGE_TAG2
+          docker build . --file app/source/Dockerfile --tag simple-web:$IMAGE_TAG
+          docker tag simple-web:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+          docker push ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+
+
   deploy:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
