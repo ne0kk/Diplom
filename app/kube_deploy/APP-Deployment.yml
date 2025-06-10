@@ -20,7 +20,7 @@ spec:
   spec:
    containers:
     - name: simple-web
-      image: ne0kk/simple-web:v1.9.8
+      image: ne0kk/simple-web:v1.9.10
       ports:
       - containerPort: 80
         name: simple-port
