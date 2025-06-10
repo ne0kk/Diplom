@@ -25,15 +25,15 @@ jobs:
           username: ${{ secrets.USER_DOCKER_HUB }}
           password: ${{ secrets.TOKEN_DOCKER_HUB }}
       - name: Initial env
-        run: echo "Переменная определена- ${{ env.IMAGE_TAG }}"
+        run: echo ${{ env.IMAGE_TAG }}
         env:
           IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
       - name: Build Docker Hub Registry
         run: |
-          echo ${{ secrets.USER_DOCKER_HUB }}/simple-web:${{ env.IMAGE_TAG }}
-          docker build . --file app/source/Dockerfile --tag simple-web:${{ env.IMAGE_TAG }}
-          docker tag simple-web:${{ env.IMAGE_TAG }} ${{ secrets.USER_DOCKER_HUB }}/simple-web:${{ env.IMAGE_TAG }}
-          docker push ${{ secrets.USER_DOCKER_HUB }}/simple-web:${{ env.IMAGE_TAG }}
+          echo ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+          docker build . --file app/source/Dockerfile --tag simple-web:$IMAGE_TAG
+          docker tag simple-web:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+          docker push ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
 
 
   deploy:
@@ -81,11 +81,11 @@ jobs:
       # Шаг 6: Deploy APP
       - name: Deploy to Kubernetes
         run: |
-          echo ${{ env.IMAGE_TAG }}
+          echo $${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
           kubectl config view
           kubectl get nodes
           kubectl get pods --all-namespaces
-          kubectl set image deployment/simple-deploynent simple-web=${{ secrets.USER_DOCKER_HUB }}/simple-web:${{ env.IMAGE_TAG }} -n app
+          kubectl set image deployment/simple-deploynent simple-web=${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG -n app
           kubectl rollout status deployment/simple-deploynent -n app
           kubectl get pods --all-namespaces
         #  kubectl delete -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
