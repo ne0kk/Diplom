@@ -11,12 +11,11 @@ on:
       - v*
 
 jobs:
-  env:
-    IMAGE_TAG: ${{ github.ref_type == 'tag'  || 'latest' }}
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      IMAGE_TAG: ${{ github.ref_type == 'tag'  || 'latest' }}
     steps:
       - name: Check
         uses: actions/checkout@v4
