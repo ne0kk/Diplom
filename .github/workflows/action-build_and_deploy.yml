@@ -11,6 +11,8 @@ on:
       - v*
 
 jobs:
+  env:
+    IMAGE_TAG: ${{ github.ref_type == 'tag'  || 'latest' }}
   build:
 
     runs-on: ubuntu-latest
@@ -26,8 +28,7 @@ jobs:
           password: ${{ secrets.TOKEN_DOCKER_HUB }}
 
       - name: Build Docker Hub Registry
-        env:
-           IMAGE_TAG: ${{ github.ref_type == 'tag'  || 'latest' }}
+
 
         run: |
           echo $IMAGE_TAG
@@ -82,8 +83,6 @@ jobs:
 
       # Шаг 6: Deploy APP
       - name: Deploy to Kubernetes
-        env:
-           IMAGE_TAG: ${{ github.ref_type == 'tag'  || 'latest' }}
         run: |
           kubectl config view
           kubectl get nodes
