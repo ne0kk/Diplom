@@ -1138,9 +1138,8 @@ jobs:
  - Все файлы хранятся в одном репозитории.  
 
 ---
-### Дополнения
+# Дополнения
 Получил замечаний от своего проверяющего преподователя. 
-Все замечания принимаем с большой благодарностью, они помогают нам более тонко разбираться в предмете. 
 
 ### Основные замечания 
 ```
@@ -1153,6 +1152,8 @@ jobs:
 
 Внесем изменеия в наши манифесты. 
 Создадим Deployment вместо ранее используемого DemonSet
+
+### APP-Deployment.yml
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -1221,6 +1222,8 @@ CMD python index.py
 Объеденим два наших workflow action в один. 
 Логика сработки простая но в целом удовлетворяет заданию:
 при пуше тега в любую ветку, сначала произойдет сборка приложения и пуш его в DockerHub, если сборка прошщла корректно, то седуюший шаг задеплоит его в наш кубер. 
+
+### action-build_and_deploy.yml
 
 ```
 name: Build Docker Image CI
@@ -1323,5 +1326,45 @@ jobs:
 
 
 ```
+
+Попробуем все запустить и проверить работу всех компонентов нашего проекта. 
+
+Наша инфраструктура стартовала без ошибок. 
+
+![image](https://github.com/user-attachments/assets/af711f80-7f67-4359-8cd4-67919289a763)
+
+Стартанем приложение и мониторинг. 
+
+![image](https://github.com/user-attachments/assets/1666d700-2902-47b2-890b-670c592aba41)
+
+Наше приложение 
+
+![image](https://github.com/user-attachments/assets/fb74347e-9caa-4abc-9910-4e12794756b5)
+
+Наш мониторинг
+
+![image](https://github.com/user-attachments/assets/7450bae2-a9f8-4516-907d-715bb51150c0)
+
+
+Проверим работу нашего workflow, добавив в название нашего приложения - TAG и запушим тег 'v2.2' в репозиторий.
+
+![image](https://github.com/user-attachments/assets/e6a8dc4e-2f8b-4eff-b0fd-dc9647b65bdf)
+
+![image](https://github.com/user-attachments/assets/16bdb5b9-b57b-4dba-83a5-fe9f1e586a1a)
+
+![image](https://github.com/user-attachments/assets/837f6294-781a-43e8-bd2b-000b0fb46a15)
+
+![image](https://github.com/user-attachments/assets/fefbb609-73da-4539-a9d7-34b3bffffe9f)
+
+![image](https://github.com/user-attachments/assets/cff687d6-9791-491d-940b-c56ee200257c)
+
+Получили ожидаемый результат:
+- Наше приложение билдится и деплоится по push тега.
+- сам проект исползует деплойменты для обновления образа.
+
+
+
+
+
 
 
