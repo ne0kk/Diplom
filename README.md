@@ -1137,3 +1137,191 @@ jobs:
 8. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
  - Все файлы хранятся в одном репозитории.  
 
+---
+### Дополнения
+Получил замечаний от своего проверяющего преподователя. 
+Все замечания принимаем с большой благодарностью, они помогают нам более тонко разбираться в предмете. 
+
+### Основные замечания 
+```
+В целом, у вас получилась хорошая работа. Для доработки я бы отметил только два момента:
+
+используйте Deployment вместо Daemonset, так как это будет правильное использование правильного инструмента
+настройте пайплан на запуск по событию создания git-тега, сборку образа с тегом, равным этому git-тегу, push с этим тегом и деплой именно с ним, а не с latest (для простоты можно просто поправить YAML-файл sedом или envsubst)
+
+```
+
+Внесем изменеия в наши манифесты. 
+Создадим Deployment вместо ранее используемого DemonSet
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-deploynent
+  namespace: app
+spec: 
+ selector:
+  matchLabels:
+   app: front
+ replicas: 3
+ strategy:
+  type: RollingUpdate
+  rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+ template :
+  metadata:
+   labels:
+    app: front
+  spec:
+   containers:
+    - name: simple-web
+      image: ne0kk/simple-web:v1.9.10
+      ports:
+      - containerPort: 80
+        name: simple-port
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-service
+  namespace: app
+spec:
+  ports:
+    - name: simple-port
+      port: 80
+      protocol: TCP
+      targetPort: 80
+      nodePort: 30080
+  selector:
+    app: front
+  type: NodePort
+```
+Уберем из кода terraform излишнюю интерполяцию
+
+```
+список манифестов
+```
+
+Внесем изменения в сборку нашегго образа, вынесем наше приложение в отдельную папку, для исключения при сборки не нужных нам файлов. 
+Добавим папку source и перенесем в нее наш Dockerfile и index.py
+```
+FROM python:2.7
+EXPOSE 80
+WORKDIR /code
+ADD app/source/. /code
+RUN touch index.html
+CMD python index.py
+
+```
+
+Изменим наши workflow action для корректного выполнения задания, в котором указано сбора и деплой при пуше тега.
+Объеденим два наших workflow action в один. 
+Логика сработки простая но в целом удовлетворяет заданию:
+при пуше тега в любую ветку, сначала произойдет сборка приложения и пуш его в DockerHub, если сборка прошщла корректно, то седуюший шаг задеплоит его в наш кубер. 
+
+```
+name: Build Docker Image CI
+
+on:
+  push:
+    # branches:
+    #   - dev
+    # paths:
+    #   - 'app/source/**'
+    tags:
+      - v*
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check
+        uses: actions/checkout@v4
+
+      - name: Docker Hub enter
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.USER_DOCKER_HUB }}
+          password: ${{ secrets.TOKEN_DOCKER_HUB }}
+      - name: Build Docker Hub Registry
+        env:
+           IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+        run: |
+          echo ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+          docker build . --file ./app/source/Dockerfile --tag simple-web:$IMAGE_TAG
+          docker tag simple-web:$IMAGE_TAG ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+          docker push ${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      #1: Clone repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      #2: Install Yandex CLI
+      - name: Install Yandex Cloud CLI
+        run: |
+          curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          echo "${HOME}/yandex-cloud/bin" >> $GITHUB_PATH
+
+      #3: Enter в Yandex Cloud
+      - name: Authenticate in Yandex Cloud
+        env:
+          YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SERVICE_ACCOUNT_KEY }}
+          YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+        run: |
+          echo "${YC_SERVICE_ACCOUNT_KEY}" > yc-sa-key.json
+          yc config set service-account-key yc-sa-key.json
+          yc config set cloud-id "${YC_CLOUD_ID}"
+          yc config set folder-id "${YC_FOLDER_ID}"
+
+      #4: Install kubectl
+      - name: Install kubectl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y kubectl
+
+      #5:  Connect Kubernetes
+      - name: Configure kubectl
+        env:
+          YC_SERVICE_ACCOUNT_KEY: ${{ secrets.YC_SERVICE_ACCOUNT_KEY }}
+          YC_CLUSTER_NAME: ${{ secrets.YC_CLUSTER_NAME }}
+        run: |
+          yc managed-kubernetes cluster get-credentials --name "${YC_CLUSTER_NAME}" --external
+          kubectl get nodes
+
+      # Шаг 6: Deploy APP
+      - name: Deploy to Kubernetes
+        env:
+           IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+        run: |
+          echo ${{ env.IMAGE_TAG }}
+          echo env.IMAGE_TAG
+          echo $IMAGE_TAG
+
+          kubectl config view
+          kubectl get nodes
+          kubectl get pods --all-namespaces
+          kubectl set image deployment/simple-deploynent simple-web=${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG -n app
+          kubectl rollout status deployment/simple-deploynent -n app
+          kubectl get pods --all-namespaces
+        #  kubectl delete -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
+        #  kubectl apply -f app/kube_deploy/APP-DaemonSet.yml -f app/kube_deploy/APP-service.yml
+        # kubectl create deployment nginx --image=${{ secrets.USER_DOCKER_HUB }}/simple-web:$IMAGE_TAG
+        # kubectl set image deployment/simple-deploynent simple-web=ne0kk/simple-web:latest -n app
+        # kubectl rollout status deployment/simple-deploynent -n app
+
+
+```
+
+
