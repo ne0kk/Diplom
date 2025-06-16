@@ -1324,4 +1324,31 @@ jobs:
 
 ```
 
+Попробуем все запустить и проверить работу всех компонентов нашего проекта. 
+Наша инфраструктура стартовала без ошибок. 
+![image](https://github.com/user-attachments/assets/af711f80-7f67-4359-8cd4-67919289a763)
+Стартанем приложение и мониторинг. 
+![image](https://github.com/user-attachments/assets/1666d700-2902-47b2-890b-670c592aba41)
+Наше приложение 
+![image](https://github.com/user-attachments/assets/fb74347e-9caa-4abc-9910-4e12794756b5)
+Наш мониторинг
+![image](https://github.com/user-attachments/assets/7450bae2-a9f8-4516-907d-715bb51150c0)
+
+Проверим работу нашего workflow, добавив в название нашего приложения - TAG и запушим тег 'v2.2' в репозиторий.
+
+![image](https://github.com/user-attachments/assets/e6a8dc4e-2f8b-4eff-b0fd-dc9647b65bdf)
+
+![image](https://github.com/user-attachments/assets/16bdb5b9-b57b-4dba-83a5-fe9f1e586a1a)
+
+![image](https://github.com/user-attachments/assets/fefbb609-73da-4539-a9d7-34b3bffffe9f)
+
+![image](https://github.com/user-attachments/assets/cff687d6-9791-491d-940b-c56ee200257c)
+
+
+
+
+
+
+
+
 
